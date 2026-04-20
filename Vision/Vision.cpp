@@ -8,8 +8,11 @@ using namespace std;
 
 int main()
 {
+	Logger log = Logger();
 	cout << "Hello CMake." << endl;
-	Logger::info("This is an info message.");
+	log.info("This is an info message [INFO] - need to be blue");
+	log.error("This is an error message. [ERROR] - need to be red color");
+	log.warning("This is an warning message. [WARNING] = need to be Yellow color");
 
 	return 0;
 }
