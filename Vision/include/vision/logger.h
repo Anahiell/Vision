@@ -24,5 +24,6 @@ public:
 	void setLogToConsole(bool enable);
 
 	void logFile(const std::string& message);
+	void initialization();
 	~Logger();
 };

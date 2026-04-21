@@ -8,8 +8,14 @@ add_executable (Vision "Vision.cpp"
  
 "src/core/logger.cpp" 
 "include/vision/logger.h"
-)
+ "src/device/CameraProbe.h"
+ "src/device/CameraProbe.cpp"
+ )
 target_include_directories(Vision PRIVATE include)
+
+find_package(OpenCV REQUIRED)
+
+target_link_libraries(Vision PRIVATE ${OpenCV_LIBS})
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Vision PROPERTY CXX_STANDARD 20)
