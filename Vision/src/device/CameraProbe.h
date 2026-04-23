@@ -3,13 +3,12 @@
 
 class CameraProbe {
 	Logger& log;
-private:
-	std::vector<int> cameraList;
 public:
+	int maxIdex = 5; // Maximum camera index to probe
+	CameraProbe() = delete; // Delete default constructor
 	CameraProbe(Logger& log);
+	CameraProbe(int maxIdex, Logger& log);
 
-	void probeCameras();
 
-	~CameraProbe();
-
+	std::vector<int> probeCameras();
 };

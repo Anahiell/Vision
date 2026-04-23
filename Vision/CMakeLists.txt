@@ -10,7 +10,7 @@ add_executable (Vision "Vision.cpp"
 "include/vision/logger.h"
  "src/device/CameraProbe.h"
  "src/device/CameraProbe.cpp"
- )
+  "src/device/CameraSource.h" "src/device/CameraSource.cpp")
 target_include_directories(Vision PRIVATE include)
 
 find_package(OpenCV REQUIRED)
