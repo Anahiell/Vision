@@ -3,22 +3,29 @@
 
 #include "Vision.h"
 #include "vision/logger.h"
+#include "vision/YoloDetector.h"
+#include "vision/AppState.h"
+#include "vision/ConsoleMenu.h"
 #include "src/device/CameraProbe.h"
 #include "src/device/CameraSource.h"
 #include <cstdlib>
+#include<thread> 
+#include <mutex>
+#include <atomic>
 
 using namespace std;
 
 int main()
 {
-	Logger log = Logger();
-	/*cout << "Hello CMake." << endl;
-	log.info("This is an info message [INFO] - need to be blue");
-	log.error("This is an error message. [ERROR] - need to be red color");
-	log.warning("This is an warning message. [WARNING] = need to be Yellow color");
-	*/
-	
-	/*CameraProbe probe(log);
+    vision::AppState state;
+    std::thread menuThread(vision::runConsoleMenu, std::ref(state));
+
+    menuThread.join();
+
+    Logger log = Logger();
+
+    YoloDetector yolo = YoloDetector();
+    CameraProbe probe(log);
 	vector<int> cameras = probe.probeCameras();
 	if (cameras.empty()) {
 		log.error("No cameras found.");
@@ -30,8 +37,42 @@ int main()
 		log.error("Failed to open camera.");
 		return -1;
 	}
+    int frameId = 0;
+    std::vector<Detection> lastDetection;
 
-	while (true) {
+    std::mutex frameMutex;
+    std::mutex detectionMutex;
+
+    cv::Mat latestFrameForDetection;
+    
+    std::atomic<bool> running = true;
+    std::atomic<bool> hasNewFrame = false;
+
+    std::thread detectorThread([&]() {
+        while (running) {
+            cv::Mat frameCopy;
+            {
+                std::lock_guard<std::mutex> lock(frameMutex);
+
+                if (!hasNewFrame || latestFrameForDetection.empty()) {
+                    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+                    continue;
+                }
+                latestFrameForDetection.copyTo(frameCopy);
+                hasNewFrame = false;
+            }
+
+            auto detections = yolo.detect(frameCopy);
+            {            
+                std::lock_guard<std::mutex>lock(detectionMutex);
+                if (!detections.empty()) {
+                    lastDetection = detections;
+                }
+            }
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+        });
+    while (true) {
 		cv::Mat frame = camera.captureFrame();
 
 		if (frame.empty()) {
@@ -40,16 +81,47 @@ int main()
 			}
 			continue; 
 		}
+        {
+            std::lock_guard<std::mutex>lock(frameMutex);
+            frame.copyTo(latestFrameForDetection);
+            hasNewFrame = true;
+        }
+       
 
-		cv::imshow("Camera", frame);
+        std::vector<Detection> detectionsToDraw;
+        {
+            std::lock_guard<std::mutex> lock(detectionMutex);
+            detectionsToDraw = lastDetection;
+        }
+        for (const Detection& det : detectionsToDraw) {
+            cv::rectangle(frame, det.box, cv::Scalar(0, 255, 0), 2);
+            
+            cv::Point textPos(det.box.x, std::max(20, det.box.y - 10));
+
+            cv::putText(
+            frame,
+                det.className + " " + std::to_string((int)(det.confidence * 100)) + "%",
+                textPos,
+                cv::FONT_HERSHEY_SIMPLEX,
+                0.5,
+                cv::Scalar(0,255,0),
+                2
+            );
+        }
+
+        frameId++;
+        cv::imshow("Camera", frame);
 
 		if (cv::waitKey(1) >= 0)
 			break;
 	}
+    running = false;
+    if (detectorThread.joinable()) {
+        detectorThread.join();
+    }
+	camera.closeCamera();
 
-	camera.closeCamera();*/
-
-
+    /*
 
 
     cv::VideoCapture cap;
@@ -58,7 +130,6 @@ int main()
     // DSHOW (DirectShow) - самый стабильный для Windows
     // MSMF - современный стандарт Windows
     // ANY - автоматический выбор
-    std::vector<int> apis = { cv::CAP_DSHOW, cv::CAP_MSMF, cv::CAP_ANY };
 
     bool found = false;
 
@@ -99,5 +170,5 @@ int main()
         if (cv::waitKey(1) >= 0) break;
     }
 
-    return 0;
+    return 0;*/
 }

@@ -10,13 +10,14 @@ add_executable (Vision "Vision.cpp"
 "include/vision/logger.h"
  "src/device/CameraProbe.h"
  "src/device/CameraProbe.cpp"
-  "src/device/CameraSource.h" "src/device/CameraSource.cpp")
+ "src/core/ConsoleMenu.cpp"
+  "src/device/CameraSource.h" "src/device/CameraSource.cpp" "include/vision/YoloDetector.h" "src/vision/YoloDetector.cpp" "include/vision/IDetector.h")
 target_include_directories(Vision PRIVATE include)
 
 find_package(OpenCV REQUIRED)
 
 target_link_libraries(Vision PRIVATE ${OpenCV_LIBS})
-
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/models DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Vision PROPERTY CXX_STANDARD 20)
 endif()

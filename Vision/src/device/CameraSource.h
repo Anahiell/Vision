@@ -5,6 +5,8 @@
 
 class CameraSource {
 	Logger& log;
+	std::vector<int> apis = { cv::CAP_DSHOW, cv::CAP_MSMF, cv::CAP_ANY };
+
 private:
 	double fps = 0.0;
 	std::chrono::high_resolution_clock::time_point startTime = std::chrono::high_resolution_clock::now();
