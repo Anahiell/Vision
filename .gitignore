@@ -361,3 +361,33 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+# Local ML models
+Vision/models/
+# ML weights (big files)
+*.weights
+*.onnx
+*.engine
+# CMake
+CMakeCache.txt
+CMakeFiles/
+cmake-build*/
+build/
+out/build/
+# Ninja
+.ninja_deps
+.ninja_log
+# Logs
+*.log
+logs/
+# Temp media
+*.png
+*.jpg
+*.avi
+*.mp4
+temp/
+captures/
+# Binaries
+*.exe
+*.dll
+*.lib
+*.so
