@@ -25,7 +25,7 @@ The goal of the project is to experiment with camera input, device probing, YOLO
     
 ## Project Structure
 
-    ```txt
+  ```txt
     Vision/
     ├── include/vision/        # Public headers
     ├── src/core/              # Logger and console menu logic
@@ -34,7 +34,7 @@ The goal of the project is to experiment with camera input, device probing, YOLO
     ├── models/                # Local model files, not pushed to Git
     ├── Vision.cpp             # Entry point
     └── CMakeLists.txt
-
+```
 
 ## Requirements
 
@@ -46,19 +46,19 @@ The goal of the project is to experiment with camera input, device probing, YOLO
 
 ## Configure and build with CMake:
 
-    ```CMake
+```cmake
     set(OpenCV_DIR "D:/cppLib/opencv/build")
     find_package(OpenCV REQUIRED)
     target_link_libraries(Vision PRIVATE ${OpenCV_LIBS})
-
+```
 
 ## Expected local structure:
-
+```txt
 Vision/models/yolo/
 ├── coco.names
 ├── yolov3.cfg
 └── yolov3.weights
-
+```
 
 ## Planned Improvements:
 - Improve YOLO detection performance
