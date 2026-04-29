@@ -46,7 +46,7 @@ The goal of the project is to experiment with camera input, device probing, YOLO
 
 ## Configure and build with CMake:
 
-    ```code
+    ```CMake
     set(OpenCV_DIR "D:/cppLib/opencv/build")
     find_package(OpenCV REQUIRED)
     target_link_libraries(Vision PRIVATE ${OpenCV_LIBS})
