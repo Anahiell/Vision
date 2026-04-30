@@ -18,11 +18,12 @@ using namespace std;
 int main()
 {
     vision::AppState state;
-    std::thread menuThread(vision::runConsoleMenu, std::ref(state));
+
+	Logger log = Logger();
+    std::thread menuThread(vision::runConsoleMenu, std::ref(state), std::ref(log));
 
     menuThread.join();
-
-    Logger log = Logger();
+   
 
     YoloDetector yolo = YoloDetector();
     CameraProbe probe(log);

@@ -1,12 +1,13 @@
 #include "vision/ConsoleMenu.h"
 #include <iostream>
+
 namespace vision {
 
-	void runConsoleMenu(AppState& state)
+	void runConsoleMenu(AppState& state, Logger& log)
 	{
 		while (state.running.load()) {
 			std::cout << "\n\t===\tRuntime Controle Menu\t===\t\n";
-			std::cout << "\t1. Toggle logger\n";
+			std::cout << "\t1. Toggle logger & open settings\n";
 			std::cout << "\t2. Toggle camera\n";
 			std::cout << "\t3. Toggle GPU\n";
 			std::cout << "\t4. Show status\n";
@@ -20,6 +21,8 @@ namespace vision {
 			{
 			case 1:
 				state.loggerEnabled.store(!state.loggerEnabled.load());
+				log.startLogWindow();
+				log.setLogToWindow(true);
 				break;
 
 			case 2:
@@ -44,4 +47,5 @@ namespace vision {
 			}
 		}
 	}
+	
 }
